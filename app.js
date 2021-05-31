@@ -1,16 +1,14 @@
+const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
-const port = 8000;
 
-const DB = 'mongodb+srv://jyoti:Vande@matram786@cluster0.ikvuv.mongodb.net/mern_300521?retryWrites=true&w=majority';
+dotenv.config({path: './config.env'});
 
-mongoose.connect(DB,{
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
-}).then(()=>{console.log("CONNECTED TO DB");}).catch((err)=>console.log('not connected to DB',err));
+const DB = process.env.DATABASE;
+const PORT = process.env.PORT;
+
+require('./db/conn');
 
 app.get('/',(req,res)=>{
     res.send("hello world from server");
@@ -33,6 +31,6 @@ app.get('/signup',(req,res)=>{
 });
 
 
-app.listen(port,()=>{
-    console.log(`listening to port ${port}`);
+app.listen(PORT,()=>{
+    console.log(`listening to port ${PORT}`);
 })
