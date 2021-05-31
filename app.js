@@ -9,6 +9,8 @@ const DB = process.env.DATABASE;
 const PORT = process.env.PORT;
 
 require('./db/conn');
+// requiring userSchema
+const User = require('./model/userSchema');
 
 app.get('/',(req,res)=>{
     res.send("hello world from server");
