@@ -10,7 +10,13 @@ const PORT = process.env.PORT;
 
 require('./db/conn');
 // requiring userSchema
-const User = require('./model/userSchema');
+
+app.use(express.json());
+
+// linked the router file
+app.use(require('./router/auth'));
+
+
 
 app.get('/',(req,res)=>{
     res.send("hello world from server");
