@@ -48,17 +48,20 @@ router.post('/register',async (req,res)=>{
 
 router.post('/signin',  async(req,res)=>{
   try{
+      let token;
    const {email, password} = req.body;
    if(!email || !password)
    {
        return res.json("all fields are required");
    }
         const user = await User.findOne({email:email});
+        // agar email exist krta h then
         if( user){
             const isMatch = await bcrypt.compare(password,user.password);
+            // password check kro ki match krta h ya nhi
             if(isMatch)
            { 
-               const token = await user.generateAuthToken();
+             token = await user.generateAuthToken();
                return res.status(200).json("Sign in success");
             }
            else{
@@ -67,25 +70,16 @@ router.post('/signin',  async(req,res)=>{
         }
         else
         return res.status(422).json("Invalid credentials");
+
+        //    generating cookie
+        res.cookie("jwtoken", token, {
+            expires: new Date(Date.now() + 2589200000),
+            httpOnly: true
+        });
     }catch(err){
         console.log(err);
     }
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
