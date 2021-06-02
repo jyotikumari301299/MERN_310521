@@ -1,7 +1,9 @@
-const dotenv = require('dotenv');
-const mongoose = require('mongoose');
+
 const express = require('express');
 const app = express();
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+
 
 dotenv.config({path: './config.env'});
 
@@ -30,9 +32,9 @@ app.get('/contact',(req,res)=>{
     res.send("hello IN CONTACT from server");
 });
 
-app.get('/signin',(req,res)=>{
-    res.send("hello IN signin from server");
-});
+// app.get('/signin',(req,res)=>{
+//     res.send("hello IN signin from server");
+// });
 
 app.get('/signup',(req,res)=>{
     res.send("hello IN signup from server");

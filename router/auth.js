@@ -2,40 +2,13 @@ const express = require('express');
 const router = express.Router();
 require('../db/conn');
 const User = require('../model/userSchema');
+const bcrypt = require('bcryptjs');
 
 router.get('/', (req,res)=>{
     res.send("hello from the server router");
 });
 
-// for fetching data from form for backend use (using promises)
-// router.post('/register', (req,res)=>{
-//     const {name,email,phone,work,password,cpassword} = req.body;
-//     if( !name ||  !email|| !phone|| !work|| !password|| !cpassword )
-//     {
-//         return res.status(422).json({error:"plz fill required field"});
-//     }
-//     User.findOne({email:email})
-//     .then((userExist)=>{
-//         if(userExist){
-//             return res.status(422).json({error: "Email already exist"});
-//         }
-//         const user = new User({name,email,phone,work,password,cpassword});
-
-//         user.save().then(()=>{
-//             res.status(201).json({message: "user registered successfully"});
-//         }).catch((err)=>res.status(500).json({error: "Failed to register"}));
-//     }).catch((err)=>console.log(err));
-// });
-
-
-
-
-
-
-
-
-
-
+// register
 router.post('/register',async (req,res)=>{
     const {name, email, phone, work, password, cpassword} = req.body;
 
@@ -50,12 +23,18 @@ router.post('/register',async (req,res)=>{
         {
             return res.send("Email already exist");
         }
-
-        const user = await new User(req.body);
+        else if(password != cpassword)
+        {
+            return res.status(422).json("password and cpassword is not matching.");
+        }
+        else{
+            const user = await new User(req.body);
+        // console.log(user.password);
         const registerd = await user.save();
         if(registerd)
         {
             return res.status(200).json("User created successfully");
+        }
         }
 
     }catch(err){
@@ -64,11 +43,30 @@ router.post('/register',async (req,res)=>{
     }
 })
 
+// login
 
-
-
-
-
+router.post('/signin',  async(req,res)=>{
+  try{
+   const {email, password} = req.body;
+   if(!email || !password)
+   {
+       return res.json("all fields are required");
+   }
+        const user = await User.findOne({email:email});
+        if( user){
+            const isMatch = await bcrypt.compare(password,user.password);
+            if(isMatch)
+           { return res.status(200).json("Sign in success");}
+           else{
+            return res.status(422).json("Invalid credentials");
+           }
+        }
+        else
+        return res.status(422).json("Invalid credentials");
+    }catch(err){
+        console.log(err);
+    }
+})
 
 
 
